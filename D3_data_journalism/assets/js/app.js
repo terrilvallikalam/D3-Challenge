@@ -24,10 +24,10 @@ var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Initial Parameters
-var chosenXaxis = "age";
+var chosenXAxis = "age";
 
 // Function used for updating x-scale variable upon axis label click
-function xScale(data, chosenXaxis) {
+function xScale(data, chosenXAxis) {
     // Create scales
     var xLinearScale = d3.scaleLinear()
         .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
@@ -85,5 +85,51 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 
 // Retrieve data from CSV file
 d3.csv("../data/data.csv").then(function(journalismData, err) {
+    if (err) throw err;
+
+    // parse data
+    journalism.forEach(function(data) {
+        data.age = +data.age;
+        data.income = +data.income;
+        data.poverty = +data.poverty;
+    });
+
+    // xLinearScale function abouve CSV import
+    var xLinearScale = xScale(journalismData, chosenXAxis);
+
+    // Create a y scale function
+    var yLinearScale = d3.scaleLinear()
+        .domain([0, d3.max(journalismData, d => d.income)])
+        .range([height, 0]);
     
+    // Create initial axis functions
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
+
+    // Append x axis
+    var xAxis = chartGroup.append("g")
+        .classed("x-axis", true)
+        .attr("transform", `translate(0, ${height})`)
+        .call(bottomAxis);
+    
+    // Append y axis
+    chartGroup.append("g")
+        .call(leftAxis);
+    
+    // Append initial circles
+    var circlesGroup = chartGroup.selectAll("circle")
+        .data(journalismData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xLinearScale(d[chosenXAxis]))
+        .attr("cy", d => yLinearScale(d.income))
+        .attr("r", 30)
+        .attr("fill", "green")
+        .attr("opacity", ".5");
+    
+    // Create group for two a-axis labels
+    var labelsGroup = chartGroup.append("g")
+        .attr("transform", `translate(${width / 2}, ${height + 20})`);
+    
+    var 
 })
