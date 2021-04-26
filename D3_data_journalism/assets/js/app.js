@@ -48,3 +48,42 @@ function renderAxes(newXScale, xAxis) {
 }
 
 // Function used for updating circles group with a transition to new circles
+function renderCircles(circlesGroup, newXScale, chosenXAxis) {
+    circlesGroup.transition()
+        .duration(1000)
+        .attr("cx", d=> newXScale(d[chosenXAxis]));
+    return circlesGroup;
+}
+
+// Function used for updating circles group with new tooltip
+function updateToolTip(chosenXAxis, circlesGroup) {
+    var label;
+
+    if (chosenXAxis === "age") {
+        label = "Age:";
+    }
+    else {
+        label = "Income:";
+    }
+
+    var toolTip = d3.tip()
+        .attr("class", "tooltip")
+        .offset([80, -60])
+        .html(function(d) {
+            return (`${d.journalism}<br>${label} ${d[chosenXAxis]}`);
+        });
+    circlesGroup.call(toolTip);
+
+    circlesGroup.on("mouseover", function(data) {
+        toolTip.show(data);
+    })
+        .on("mouseout", function(data, index) {
+            toolTip.hide(data);
+        });
+    return circlesGroup;
+}
+
+// Retrieve data from CSV file
+d3.csv("../data/data.csv").then(function(journalismData, err) {
+    
+})
