@@ -131,5 +131,20 @@ d3.csv("../data/data.csv").then(function(journalismData, err) {
     var labelsGroup = chartGroup.append("g")
         .attr("transform", `translate(${width / 2}, ${height + 20})`);
     
-    var 
+    var ageLabel = labelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 20)
+        .attr("value", "age")
+        .classed("active", true)
+        .text("Age (years)");
+    
+    var povertyLabel = labelsGroup.append("text")
+        .attr("x",0)
+        .attr("y", 50)
+        .attr("value", "poverty")
+        .classed("inactive", true)
+        .text("Poverty Level");
+    
+    // Append y axis (line 158)
+
 })
